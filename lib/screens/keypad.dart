@@ -15,7 +15,7 @@ class Keypad extends StatelessWidget {
     '0': '+',
     '#': '(W)'
   };
-  List<String> charactersPressed = List<String>();
+  final List<String> words = ['BAT', 'CAT', 'ARC', 'DOT', 'CAR'];
 
   List<OutlineButton> getButtons(int startIndex) {
     List<OutlineButton> outlineButton = List<OutlineButton>();
@@ -23,12 +23,8 @@ class Keypad extends StatelessWidget {
     for (int i = startIndex; i < endIndex; i++) {
       outlineButton.add(OutlineButton(
         onPressed: () {
-          String values = keyBoard.values.toList()[i];
-          for (int j = 0; j < values.length; j++) {
-            charactersPressed.add(values[j]);
-          }
-
-          print(charactersPressed);
+          String temp = keyBoard.values.toList()[i];
+          getWords(words, temp);
         },
         child: Column(
           children: [
@@ -52,6 +48,23 @@ class Keypad extends StatelessWidget {
       );
     }
     return keyBoardRow;
+  }
+
+  String getWords(List<String> words, String charactersPressed) {
+    List<String> tempWords = List<String>();
+    String newWord;
+    for (int i = 0; i < words.length; i++) {
+      for (int j = 0; j < charactersPressed.length; j++) {
+        if (words[i].contains(charactersPressed[j])) {
+          for (int k = 0; k < charactersPressed.length; k++) {
+            if (!tempWords.contains(words[i])) {
+              tempWords.add(words[i]);
+              print(tempWords);
+            }
+          }
+        }
+      }
+    }
   }
 
   @override
