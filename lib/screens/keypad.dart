@@ -16,14 +16,15 @@ class Keypad extends StatelessWidget {
     '#': '(W)'
   };
   final List<String> words = ['BAT', 'CAT', 'ARC', 'DOT', 'CAR'];
-
+  List<String> temp = List<String>();
   List<OutlineButton> getButtons(int startIndex) {
     List<OutlineButton> outlineButton = List<OutlineButton>();
     int endIndex = startIndex + 3;
     for (int i = startIndex; i < endIndex; i++) {
       outlineButton.add(OutlineButton(
         onPressed: () {
-          String temp = keyBoard.values.toList()[i];
+          temp.add(keyBoard.values.toList()[i]);
+          print(temp);
           getWords(words, temp);
         },
         child: Column(
@@ -50,18 +51,20 @@ class Keypad extends StatelessWidget {
     return keyBoardRow;
   }
 
-  String getWords(List<String> words, String charactersPressed) {
+  String getWords(List<String> words, List<String> charactersPressed) {
     List<String> tempWords = List<String>();
-    String newWord;
+    List<String> tempValue = List<String>();
+    String characters = charactersPressed.toString();
     for (int i = 0; i < words.length; i++) {
-      for (int j = 0; j < charactersPressed.length; j++) {
-        if (words[i].contains(charactersPressed[j])) {
-          for (int k = 0; k < charactersPressed.length; k++) {
-            if (!tempWords.contains(words[i])) {
-              tempWords.add(words[i]);
-              print(tempWords);
-            }
-          }
+      for (int j = 0; j < characters.length; j++) {
+        if (words[i].contains(characters[j]) &&
+            !tempValue.contains(characters[j])) {
+          tempValue.add(characters[j]);
+          print(tempValue);
+        }
+        if (words[i].contains(characters[j]) && !tempWords.contains(words[i])) {
+          tempWords.add(words[i]);
+          print(tempWords);
         }
       }
     }
