@@ -17,6 +17,7 @@ class Keypad extends StatelessWidget {
   };
   final List<String> words = ['BAT', 'CAT', 'ARC', 'DOT', 'CAR'];
   List<String> temp = List<String>();
+  List<String> tempWords = List<String>();
   List<OutlineButton> getButtons(int startIndex) {
     List<OutlineButton> outlineButton = List<OutlineButton>();
     int endIndex = startIndex + 3;
@@ -24,8 +25,7 @@ class Keypad extends StatelessWidget {
       outlineButton.add(OutlineButton(
         onPressed: () {
           temp.add(keyBoard.values.toList()[i]);
-          print(temp);
-          getWords(words, temp);
+          getWords(keyBoard.values.toList()[i]);
         },
         child: Column(
           children: [
@@ -51,23 +51,72 @@ class Keypad extends StatelessWidget {
     return keyBoardRow;
   }
 
-  String getWords(List<String> words, List<String> charactersPressed) {
-    List<String> tempWords = List<String>();
-    List<String> tempValue = List<String>();
-    String characters = charactersPressed.toString();
+  String matchWords(String values) {
+    String exactWord = '';
+    String characters = values;
     for (int i = 0; i < words.length; i++) {
       for (int j = 0; j < characters.length; j++) {
-        if (words[i].contains(characters[j]) &&
-            !tempValue.contains(characters[j])) {
-          tempValue.add(characters[j]);
-          print(tempValue);
-        }
         if (words[i].contains(characters[j]) && !tempWords.contains(words[i])) {
           tempWords.add(words[i]);
-          print(tempWords);
+        }
+        for (int k = 0; k < tempWords.length; k++) {
+          for (int l = 0; l < characters.length; l++) {
+            if (tempWords[k].contains(characters[l]) &&
+                !exactWord.contains(characters[l])) {
+              exactWord += characters[l];
+            }
+          }
         }
       }
     }
+    print(tempWords);
+    print(exactWord);
+  }
+
+  String getWords(String values) {
+    List<int> removeIndex = <int>[];
+    if (tempWords.isNotEmpty) {
+      for (int i = 0; i < tempWords.length; i++) {
+        bool shouldRemove = true;
+        for (int j = 0; j < values.length; j++) {
+          if (tempWords[i].contains(values[j])) {
+            shouldRemove = false;
+            break;
+          }
+        }
+        if (shouldRemove) {
+          removeIndex.add(i);
+        }
+      }
+    } else {
+      for (int i = 0; i < words.length; i++) {
+        for (int j = 0; j < values.length; j++) {
+          if (words[i].contains(values[j])) {
+            if (!tempWords.contains(words[i])) {
+              tempWords.add(words[i]);
+            }
+          }
+        }
+      }
+    }
+    if (removeIndex.isNotEmpty) {
+      removeIndex.sort((a, b) => b.compareTo(a));
+      for (int val in removeIndex) {
+        tempWords.removeAt(val);
+      }
+    }
+    String exactWord;
+    if (tempWords.length > 1) {
+      exactWord = tempWords[0];
+      print(exactWord);
+      return exactWord;
+    } else {
+      exactWord = tempWords.toString();
+      print(exactWord);
+      return exactWord;
+    }
+
+    // return tempWords.toString();
   }
 
   @override
